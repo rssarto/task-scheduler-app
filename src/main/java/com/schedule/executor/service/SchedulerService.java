@@ -12,10 +12,9 @@ public class SchedulerService {
 
     private final ThreadPoolTaskScheduler threadPoolTaskScheduler;
 
-    public void scheduleTask(final Runnable task, final Instant startTime){
+    public void scheduleTask(final Runnable task, final Instant startTime) {
         threadPoolTaskScheduler.schedule(task, startTime);
     }
-
 
 
 }

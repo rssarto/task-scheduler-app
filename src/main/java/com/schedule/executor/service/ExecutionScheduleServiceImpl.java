@@ -8,7 +8,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationContext;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.PessimisticLockException;
@@ -18,7 +17,6 @@ import java.time.ZonedDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-import java.util.UUID;
 
 @AllArgsConstructor
 @Slf4j
@@ -46,19 +44,19 @@ public class ExecutionScheduleServiceImpl implements ExecutionScheduleService {
         return this.executionScheduleRepository.save(executionSchedule);
     }
 
-    private void scheduleTask(){
+    private void scheduleTask() {
         log.info("starting executeScheduledTasks...");
         final List<ExecutionSchedule> nextExecutions = this.findNextExecutions();
-        if(Objects.nonNull(nextExecutions) && !nextExecutions.isEmpty()){
+        if (Objects.nonNull(nextExecutions) && !nextExecutions.isEmpty()) {
             nextExecutions.forEach(executionSchedule -> {
-                try{
+                try {
                     final ExecutionSchedule executionScheduleForUpdate = executionScheduleRepository.findByIdForUpdate(executionSchedule.getId());
                     executionScheduleForUpdate.setStatus(Status.SCHEDULED);
                     Class<?> producerClazz = Class.forName(executionScheduleForUpdate.getTargetClass());
                     final TaskProducer taskProducer = (TaskProducer) this.applicationContext.getBean(producerClazz);
                     final Runnable task = taskProducer.produce(executionScheduleForUpdate.getTargetId());
                     this.schedulerService.scheduleTask(task, ZonedDateTime.of(executionScheduleForUpdate.getNextExecutionDate(), ZoneId.systemDefault()).toInstant());
-                }catch (PessimisticLockException | ClassNotFoundException ex){
+                } catch (PessimisticLockException | ClassNotFoundException ex) {
                     log.error("error when trying to acquire lock for task: {}", executionSchedule.getId());
                 }
             });
@@ -67,7 +65,7 @@ public class ExecutionScheduleServiceImpl implements ExecutionScheduleService {
 
     @Transactional
     @Scheduled(cron = "*/5 * * * * *")
-    public void executeScheduledTasks(){
+    public void executeScheduledTasks() {
         this.scheduleTask();
     }
 }

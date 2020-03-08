@@ -17,39 +17,33 @@ import java.util.UUID;
 @Entity
 public class ExecutionSchedule {
 
-    public ExecutionSchedule(){
-        this.historySet = new HashSet<>();
-    }
-
     @Id
     private UUID id = UUID.randomUUID();
-
     @Column(nullable = false)
     private LocalDateTime nextExecutionDate;
-
     @Column(unique = true, nullable = false)
     private UUID targetId;
-
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private ExecutionType executionType;
-
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Status status;
-
     @OneToMany(fetch = FetchType.EAGER, orphanRemoval = true, cascade = CascadeType.ALL, mappedBy = "executionSchedule")
     private Set<ExecutionHistory> historySet;
-
     @Column(nullable = false)
     private String targetClass;
 
-    public void addExecutionHistory(ExecutionHistory executionHistory){
+    public ExecutionSchedule() {
+        this.historySet = new HashSet<>();
+    }
+
+    public void addExecutionHistory(ExecutionHistory executionHistory) {
         this.historySet.add(executionHistory);
         executionHistory.setExecutionSchedule(this);
     }
 
-    public void removeExecutionHistory(ExecutionHistory executionHistory){
+    public void removeExecutionHistory(ExecutionHistory executionHistory) {
         this.historySet.remove(executionHistory);
         executionHistory.setExecutionSchedule(null);
     }
@@ -61,8 +55,12 @@ public class ExecutionSchedule {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj == null) { return false; }
-        if (obj == this) { return true; }
+        if (obj == null) {
+            return false;
+        }
+        if (obj == this) {
+            return true;
+        }
         if (obj.getClass() != getClass()) {
             return false;
         }

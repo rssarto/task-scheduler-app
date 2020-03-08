@@ -7,11 +7,11 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableScheduling
 @SpringBootApplication
 public class TaskSchedulerApplication {
-	//TODO localized messages
-	//TODO Swagger
+    //TODO localized messages
+    //TODO Swagger
 
-	public static void main(String[] args) {
-		SpringApplication.run(TaskSchedulerApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(TaskSchedulerApplication.class, args);
+    }
 
 }

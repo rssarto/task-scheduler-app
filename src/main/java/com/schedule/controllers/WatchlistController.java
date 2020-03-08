@@ -15,12 +15,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(WatchlistController.URI_PREFIX)
 public class WatchlistController {
 
+    public static final String URI_PREFIX = "/watchlist";
     private final WatchlistService watchlistService;
 
-    public static final String URI_PREFIX = "/watchlist";
-
     @PostMapping
-    public ResponseEntity<Watchlist> create(@RequestBody final Watchlist watchlist){
+    public ResponseEntity<Watchlist> create(@RequestBody final Watchlist watchlist) {
         return new ResponseEntity<>(this.watchlistService.create(watchlist), HttpStatus.OK);
     }
 

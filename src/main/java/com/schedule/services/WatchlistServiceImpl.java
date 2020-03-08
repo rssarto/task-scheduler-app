@@ -46,12 +46,12 @@ public class WatchlistServiceImpl implements WatchlistService, TaskProducer<Watc
 
     @Transactional(propagation = Propagation.NESTED)
     @Override
-    public Watchlist save(Watchlist watchlist){
+    public Watchlist save(Watchlist watchlist) {
         Watchlist savedWatchlist = null;
-        try{
+        try {
             watchlist.setExecutionSchedule(this.executionScheduleService.save(watchlist.getExecutionSchedule()));
             savedWatchlist = this.watchlistRepository.save(watchlist);
-        }catch(Exception ex){
+        } catch (Exception ex) {
             log.error("error while saving watchlist", ex);
         }
         return savedWatchlist;
@@ -65,12 +65,12 @@ public class WatchlistServiceImpl implements WatchlistService, TaskProducer<Watc
     }
 
     @Override
-    public LocalDateTime calculateFirstExecutionDate(final Watchlist watchlist){
+    public LocalDateTime calculateFirstExecutionDate(final Watchlist watchlist) {
         return LocalDateTime.now().plusSeconds(watchlist.getExecutionInterval() * 10);
     }
 
     @Override
-    public LocalDateTime calculateNextExecutionDate(final Watchlist watchlist){
+    public LocalDateTime calculateNextExecutionDate(final Watchlist watchlist) {
         return watchlist.getExecutionSchedule().getNextExecutionDate().plusMinutes(1);
     }
 
@@ -94,15 +94,16 @@ public class WatchlistServiceImpl implements WatchlistService, TaskProducer<Watc
             this.watchlistService.save(watchlist);
 
             final ExecutionHistory executionHistory = new ExecutionHistory();
-            try{
+            try {
                 log.info("EXECUTING watchlist: {} - {}", watchlist.getId(), watchlist.getName());
                 try {
                     Thread.sleep(15000);
-                }catch(InterruptedException ex){}
+                } catch (InterruptedException ex) {
+                }
                 executionHistory.setStatus(Status.SUCCESS);
-            }catch(Exception ex){
+            } catch (Exception ex) {
                 executionHistory.setStatus(Status.FAIL);
-            }finally {
+            } finally {
                 stopWatch.stop();
                 log.info("END watchlist {} - {} result: {}", watchlist.getId(), watchlist.getName(), executionHistory.getStatus());
                 executionHistory.setDuration(stopWatch.getTotalTimeMillis());
