@@ -7,4 +7,5 @@ import java.util.List;
 public interface ExecutionScheduleService {
     ExecutionSchedule create(final ExecutionSchedule executionSchedule);
     List<ExecutionSchedule> findNextExecutions();
+    ExecutionSchedule save(final ExecutionSchedule executionSchedule);
 }

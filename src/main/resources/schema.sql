@@ -8,9 +8,9 @@
 CREATE TABLE public.execution_schedule
 (
     id uuid NOT NULL,
-    execution_type integer NOT NULL,
+    execution_type character varying(255) NOT NULL,
     next_execution_date timestamp without time zone NOT NULL,
-    status integer NOT NULL,
+    status character varying(255) NOT NULL,
     target_class character varying(255) COLLATE pg_catalog."default" NOT NULL,
     target_id uuid NOT NULL,
     CONSTRAINT execution_schedule_pkey PRIMARY KEY (id),
@@ -21,8 +21,9 @@ CREATE TABLE public.execution_history
 (
     id uuid NOT NULL,
     duration bigint NOT NULL,
-    status integer NOT NULL,
+    status character varying(255) NOT NULL,
     execution_schedule_id uuid,
+    executionDate timestamp without time zone NOT NULL,
     CONSTRAINT execution_history_pkey PRIMARY KEY (id),
     CONSTRAINT fkhtgv8263x6coiauu9k2y6pt90 FOREIGN KEY (execution_schedule_id)
         REFERENCES public.execution_schedule (id) MATCH SIMPLE
