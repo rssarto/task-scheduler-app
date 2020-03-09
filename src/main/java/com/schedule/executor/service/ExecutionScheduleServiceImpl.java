@@ -7,10 +7,12 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Profile;
+import org.springframework.dao.PessimisticLockingFailureException;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.LockTimeoutException;
 import javax.persistence.PessimisticLockException;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -62,7 +64,7 @@ public class ExecutionScheduleServiceImpl implements ExecutionScheduleService {
                     }else{
                         log.info("task is not in WAITING status: {}", executionScheduleForUpdate.getId());
                     }
-                } catch (PessimisticLockException | ClassNotFoundException ex) {
+                } catch (PessimisticLockingFailureException | ClassNotFoundException ex) {
                     log.error("error when trying to acquire lock for task: {}", executionSchedule.getId());
                 }
             });
