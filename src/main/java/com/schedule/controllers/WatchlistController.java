@@ -23,7 +23,7 @@ public class WatchlistController {
     private final WatchlistService watchlistService;
 
     @PostMapping
-    public ResponseEntity<Watchlist> create(@RequestBody final Watchlist watchlist) {
+    public ResponseEntity<Watchlist> create(@RequestBody final Watchlist watchlist) throws ClassNotFoundException {
         return new ResponseEntity<>(this.watchlistService.create(watchlist), HttpStatus.OK);
     }
 

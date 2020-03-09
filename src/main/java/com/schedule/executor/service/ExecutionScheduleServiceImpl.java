@@ -53,7 +53,7 @@ public class ExecutionScheduleServiceImpl implements ExecutionScheduleService {
             nextExecutions.forEach(executionSchedule -> {
                 try {
                     final ExecutionSchedule executionScheduleForUpdate = executionScheduleRepository.findByIdForUpdate(executionSchedule.getId());
-                    executionScheduleForUpdate.setStatus(Status.SCHEDULED);
+                    executionScheduleForUpdate.applyScheduledStatus();
                     Class<?> producerClazz = Class.forName(executionScheduleForUpdate.getTargetClass());
                     final TaskProducer taskProducer = (TaskProducer) this.applicationContext.getBean(producerClazz);
                     final Runnable task = taskProducer.produce(executionScheduleForUpdate.getTargetId());

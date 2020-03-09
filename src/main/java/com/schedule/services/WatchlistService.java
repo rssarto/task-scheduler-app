@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 public interface WatchlistService {
-    Watchlist create(final Watchlist watchlist);
+    Watchlist create(final Watchlist watchlist) throws ClassNotFoundException;
 
     Watchlist save(Watchlist watchlist);
 
