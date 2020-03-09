@@ -2,6 +2,8 @@ package com.schedule.executor.repositories;
 
 import com.schedule.executor.enums.Status;
 import com.schedule.executor.model.ExecutionSchedule;
+
+import org.springframework.context.annotation.Profile;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Query;
@@ -12,6 +14,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
+@Profile("taskScheduler")
 @Repository
 public interface ExecutionScheduleRepository extends JpaRepository<ExecutionSchedule, UUID> {
 
