@@ -53,11 +53,15 @@ public class ExecutionScheduleServiceImpl implements ExecutionScheduleService {
             nextExecutions.forEach(executionSchedule -> {
                 try {
                     final ExecutionSchedule executionScheduleForUpdate = executionScheduleRepository.findByIdForUpdate(executionSchedule.getId());
-                    executionScheduleForUpdate.applyScheduledStatus();
-                    Class<?> producerClazz = Class.forName(executionScheduleForUpdate.getTargetClass());
-                    final TaskProducer taskProducer = (TaskProducer) this.applicationContext.getBean(producerClazz);
-                    final Runnable task = taskProducer.produce(executionScheduleForUpdate.getTargetId());
-                    this.schedulerService.scheduleTask(task, ZonedDateTime.of(executionScheduleForUpdate.getNextExecutionDate(), ZoneId.systemDefault()).toInstant());
+                    if(Status.WAITING.equals(executionScheduleForUpdate.getStatus())){
+                        executionScheduleForUpdate.applyScheduledStatus();
+                        Class<?> producerClazz = Class.forName(executionScheduleForUpdate.getTargetClass());
+                        final TaskProducer taskProducer = (TaskProducer) this.applicationContext.getBean(producerClazz);
+                        final Runnable task = taskProducer.produce(executionScheduleForUpdate.getTargetId());
+                        this.schedulerService.scheduleTask(task, ZonedDateTime.of(executionScheduleForUpdate.getNextExecutionDate(), ZoneId.systemDefault()).toInstant());
+                    }else{
+                        log.info("task is not in WAITING status: {}", executionScheduleForUpdate.getId());
+                    }
                 } catch (PessimisticLockException | ClassNotFoundException ex) {
                     log.error("error when trying to acquire lock for task: {}", executionSchedule.getId());
                 }
