@@ -12,11 +12,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.LockTimeoutException;
-import javax.persistence.PessimisticLockException;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -28,8 +24,8 @@ import java.util.Objects;
 public class ExecutionScheduleServiceImpl implements ExecutionScheduleService {
 
     private final ExecutionScheduleRepository executionScheduleRepository;
-    private final ApplicationContext applicationContext;
-    private final SchedulerService schedulerService;
+    private final ApplicationContext      applicationContext;
+    private final ScheduleExecutorService schedulerService;
 
     @Transactional
     @Override
@@ -56,11 +52,11 @@ public class ExecutionScheduleServiceImpl implements ExecutionScheduleService {
                 try {
                     final ExecutionSchedule executionScheduleForUpdate = executionScheduleRepository.findByIdForUpdate(executionSchedule.getId());
                     if(Status.WAITING.equals(executionScheduleForUpdate.getStatus())){
-                        executionScheduleForUpdate.applyScheduledStatus();
+                        executionScheduleForUpdate.applySentToExecutionStatus();
                         Class<?> producerClazz = Class.forName(executionScheduleForUpdate.getTargetClass());
                         final TaskProducer taskProducer = (TaskProducer) this.applicationContext.getBean(producerClazz);
                         final Runnable task = taskProducer.produce(executionScheduleForUpdate.getTargetId());
-                        this.schedulerService.scheduleTask(task, ZonedDateTime.of(executionScheduleForUpdate.getNextExecutionDate(), ZoneId.systemDefault()).toInstant());
+                        this.schedulerService.runTask(task);
                     }else{
                         log.info("task is not in WAITING status: {}", executionScheduleForUpdate.getId());
                     }

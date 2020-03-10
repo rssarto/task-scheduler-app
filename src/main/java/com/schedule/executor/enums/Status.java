@@ -1,5 +1,5 @@
 package com.schedule.executor.enums;
 
 public enum Status {
-    WAITING, SCHEDULED, RUNNING, SUCCESS, FAIL
+    WAITING, SENT_TO_EXECUTION, RUNNING, SUCCESS, FAIL
 }

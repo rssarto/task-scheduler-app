@@ -6,6 +6,8 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
 import javax.persistence.*;
+
+import java.lang.management.ManagementFactory;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -14,6 +16,10 @@ import java.util.UUID;
 @Table(name = "EXECUTION_HISTORY")
 @Entity
 public class ExecutionHistory {
+
+    public ExecutionHistory(){
+        this.environmentInfo = ManagementFactory.getRuntimeMXBean().getName();
+    }
 
     @Id
     private UUID id = UUID.randomUUID();
@@ -35,6 +41,9 @@ public class ExecutionHistory {
 
     @Column(nullable = false, name = "end_date")
     private LocalDateTime endDate;
+
+    @Column(nullable = true, name = "environment_info")
+    private String environmentInfo;
 
     public void setId(UUID id) {
         this.id = id;

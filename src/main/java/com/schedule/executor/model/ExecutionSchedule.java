@@ -14,6 +14,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 
 import com.schedule.executor.enums.Status;
@@ -37,6 +38,7 @@ public class ExecutionSchedule {
     @Column(nullable = false)
     private Status status;
 
+    @OrderBy(value = "startDate DESC")
     @OneToMany(fetch = FetchType.EAGER, orphanRemoval = true, cascade = CascadeType.ALL, mappedBy = "executionSchedule")
     private Set<ExecutionHistory> historySet;
 
@@ -107,8 +109,8 @@ public class ExecutionSchedule {
         this.setStatus(Status.WAITING);
     }
 
-    public void applyScheduledStatus(){
-        this.setStatus(Status.SCHEDULED);
+    public void applySentToExecutionStatus(){
+        this.setStatus(Status.SENT_TO_EXECUTION);
     }
 
     @Override

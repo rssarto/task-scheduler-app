@@ -24,6 +24,7 @@ CREATE TABLE public.execution_history
     execution_schedule_id uuid,
     start_date timestamp without time zone NOT NULL,
     end_date timestamp without time zone NOT NULL,
+    environment_info character varying(255),
     CONSTRAINT execution_history_pkey PRIMARY KEY (id),
     CONSTRAINT fkhtgv8263x6coiauu9k2y6pt90 FOREIGN KEY (execution_schedule_id)
         REFERENCES public.execution_schedule (id) MATCH SIMPLE
